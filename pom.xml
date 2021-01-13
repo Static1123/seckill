@@ -111,6 +111,11 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.75</version>
         </dependency>
+        <dependency>
+            <groupId>com.tngtech.archunit</groupId>
+            <artifactId>archunit</artifactId>
+            <version>0.14.1</version>
+        </dependency>
         <!--test-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

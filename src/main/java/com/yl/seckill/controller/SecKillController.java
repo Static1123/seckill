@@ -28,7 +28,7 @@ public class SecKillController extends BaseController {
     @Resource
     private SecKillService seckillService;
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(SecKillController.class);
 
     @RequestMapping("/v1/seckill/list")
     public String findSeckillList(Model model) {
@@ -65,7 +65,7 @@ public class SecKillController extends BaseController {
             Exposer exposer = seckillService.exportSeckillUrl(seckillId);
             result = new Result<Exposer>(true, exposer);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
             result = new Result<Exposer>(false, e.getMessage());
         }
         return result;

@@ -52,7 +52,7 @@ public class UserUtil {
         pstmt.executeBatch();
         pstmt.close();
         conn.close();
-        System.out.println("insert to db");
+        LOGGER.info("insert into db");
         //登录，生成token
         String urlString = "http://localhost:8080/login/do_login";
         File file = new File("D:/tokens.txt");
@@ -74,7 +74,7 @@ public class UserUtil {
             out.flush();
             InputStream inputStream = co.getInputStream();
             ByteArrayOutputStream bout = new ByteArrayOutputStream();
-            byte buff[] = new byte[1024];
+            byte[] buff = new byte[1024];
             int len = 0;
             while ((len = inputStream.read(buff)) >= 0) {
                 bout.write(buff, 0, len);
@@ -84,17 +84,17 @@ public class UserUtil {
             String response = new String(bout.toByteArray());
             JSONObject jo = JSON.parseObject(response);
             String token = jo.getString("data");
-            System.out.println("create token : " + user.getId());
+            LOGGER.info("create token : " + user.getId());
 
             String row = user.getId() + "," + token;
             raf.seek(raf.length());
             raf.write(row.getBytes());
             raf.write("\r\n".getBytes());
-            System.out.println("write to file : " + user.getId());
+            LOGGER.info("write to file : " + user.getId());
         }
         raf.close();
 
-        System.out.println("over");
+        LOGGER.info("over");
     }
 
     public static void main(String[] args) throws Exception {
