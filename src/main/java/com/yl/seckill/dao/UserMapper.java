@@ -15,9 +15,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserMapper {
 
-    @Select("select * from sk_user where id = #{id}")
-    User getById(@Param("id") long id);
+    @Select("select * from sk_user where phone = #{phone}")
+    User getByPhone(@Param("phone") Long phone);
 
     @Update("update sk_user set password = #{password} where id = #{id}")
     void update(User toBeUpdate);
+
+    @Update("update sk_user set login_count = login_count + 1 where id = #{id}")
+    void updateLoginCount(@Param("id") Long id);
 }

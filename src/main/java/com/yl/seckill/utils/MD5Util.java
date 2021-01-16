@@ -47,12 +47,12 @@ public class MD5Util {
      * 合并
      *
      * @param input
-     * @param saltDB
+     * @param salt
      * @return
      */
-    public static String inputPassToDbPass(String input, String saltDB) {
+    public static String inputPassToDbPass(String input, String salt) {
         String formPass = inputPassToFormPass(input);
-        String dbPass = formPassToDBPass(formPass, saltDB);
+        String dbPass = formPassToDBPass(formPass, salt);
         return dbPass;
     }
 

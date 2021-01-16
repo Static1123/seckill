@@ -149,7 +149,8 @@
             url: "/goods/detail/" + goodsId,
             type: "GET",
             success: function (data) {
-                if (data.code == 0) {
+                console.log(data);
+                if (data.success) {
                     //将数据渲染出来
                     render(data.data);
                 } else {
@@ -173,7 +174,7 @@
                 $("#remainSeconds").val(remainSeconds - 1);
                 countDown();
             }, 1000);
-        } else if (remainSeconds == 0) {//秒杀进行中
+        } else if (remainSeconds === 0) {//秒杀进行中
             $("#buyButton").attr("disabled", false);
             if (timeout) {
                 clearTimeout(timeout);
@@ -184,6 +185,5 @@
             $("#seckillTip").html("秒杀已经结束");
         }
     }
-
 </script>
 </html>

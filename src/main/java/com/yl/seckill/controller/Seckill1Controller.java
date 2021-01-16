@@ -31,7 +31,8 @@ import java.util.concurrent.TimeUnit;
  * @author Administrator
  */
 @Controller
-public class Seckill1Controller extends BaseController implements InitializingBean {
+@RequestMapping(value = "/seckill")
+public class Seckill1Controller implements InitializingBean {
     @Resource
     GoodsService goodsService;
 

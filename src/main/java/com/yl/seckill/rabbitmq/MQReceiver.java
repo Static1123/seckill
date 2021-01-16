@@ -1,8 +1,13 @@
 package com.yl.seckill.rabbitmq;
 
 
+import com.yl.seckill.model.SeckillOrder1;
 import com.yl.seckill.model.User;
 import com.yl.seckill.redis.RedisService;
+import com.yl.seckill.service.GoodsService;
+import com.yl.seckill.service.OrderService;
+import com.yl.seckill.service.SeckillService1;
+import com.yl.seckill.vo.GoodsVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -22,14 +27,14 @@ public class MQReceiver {
     @Resource
     private RedisService redisService;
 
-//    @Autowired
-//    GoodsService goodsService;
-//
-//    @Autowired
-//    OrderService orderService;
-//
-//    @Autowired
-//    SeckillService seckillService;
+    @Resource
+    GoodsService goodsService;
+
+    @Resource
+    OrderService orderService;
+
+    @Resource
+    SeckillService1 seckillService;
 
     @RabbitListener(queues = MQConfig.QUEUE)
     public void receive(String message) {
@@ -38,20 +43,24 @@ public class MQReceiver {
         User user = m.getUser();
         long goodsId = m.getGoodsId();
 
-//        GoodsVo goodsVo = goodsService.getGoodsVoByGoodsId(goodsId);
-//        int stock = goodsVo.getStockCount();
-//        if (stock <= 0) {
-//            return;
-//        }
-//
-//        //判断重复秒杀
-//        SeckillOrder order = orderService.getOrderByUserIdGoodsId(user.getId(), goodsId);
-//        if (order != null) {
-//            return;
-//        }
-//
-//        //减库存 下订单 写入秒杀订单
-//        seckillService.seckill(user, goodsVo);
+        GoodsVo goodsVo = goodsService.getGoodsVoByGoodsId(goodsId);
+        int stock = goodsVo.getStockCount();
+        if (stock <= 0) {
+            return;
+        }
+
+        //判断重复秒杀
+        SeckillOrder1 order = orderService.getOrderByUserIdGoodsId(user.getId(), goodsId);
+        if (order != null) {
+            return;
+        }
+        try {
+            //减库存 下订单 写入秒杀订单
+            seckillService.seckill(user, goodsVo);
+        } catch (Exception ex) {
+            LOGGER.error("减库存 下订单 写入秒杀订单 异常");
+            LOGGER.error("{}", ex.getMessage(), ex);
+        }
     }
 
     @RabbitListener(queues = MQConfig.TOPIC_QUEUE1)

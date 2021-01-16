@@ -14,6 +14,7 @@ import java.util.Date;
 @ToString
 public class User extends BaseObject {
     private Long id;
+    private Long phone;
     private String nickname;
     private String password;
     private String salt;

@@ -46,7 +46,7 @@ public class GoodsController {
      * QPS:433
      * 1000 * 10
      */
-    @RequestMapping(value = "/to_list", produces = "text/html")
+    @RequestMapping(value = "/list", produces = "text/html")
     @ResponseBody
     public String list(HttpServletRequest request, HttpServletResponse response, Model model, User user) {
 
@@ -73,9 +73,9 @@ public class GoodsController {
 
 
     /**
-     * 商品详情页面
+     * 商品详情页面(展示)
      */
-    @RequestMapping(value = "/to_detail2/{goodsId}", produces = "text/html")
+    @RequestMapping(value = "/detail2/{goodsId}", produces = "text/html")
     @ResponseBody
     public String detail2(HttpServletRequest request, HttpServletResponse response, Model model, User user, @PathVariable("goodsId") long goodsId) {
         model.addAttribute("user", user);
@@ -94,16 +94,19 @@ public class GoodsController {
         long endTime = goods.getEndDate().getTime();
         long now = System.currentTimeMillis();
 
-        int seckillStatus = 0;
-        int remainSeconds = 0;
+        int seckillStatus;
+        int remainSeconds;
 
-        if (now < startTime) {//秒杀还没开始，倒计时
+        if (now < startTime) {
+            //秒杀还没开始，倒计时
             seckillStatus = 0;
             remainSeconds = (int) ((startTime - now) / 1000);
-        } else if (now > endTime) {//秒杀已经结束
+        } else if (now > endTime) {
+            //秒杀已经结束
             seckillStatus = 2;
             remainSeconds = -1;
-        } else {//秒杀进行中
+        } else {
+            //秒杀进行中
             seckillStatus = 1;
             remainSeconds = 0;
         }
@@ -121,12 +124,11 @@ public class GoodsController {
     }
 
     /**
-     * 商品详情页面
+     * 商品详情页面(接口，秒杀调用)
      */
     @RequestMapping(value = "/detail/{goodsId}")
     @ResponseBody
     public Result<GoodsDetailVo> detail(HttpServletRequest request, HttpServletResponse response, Model model, User user, @PathVariable("goodsId") long goodsId) {
-
         //根据id查询商品详情
         GoodsVo goods = goodsService.getGoodsVoByGoodsId(goodsId);
         model.addAttribute("goods", goods);
@@ -135,16 +137,19 @@ public class GoodsController {
         long endTime = goods.getEndDate().getTime();
         long now = System.currentTimeMillis();
 
-        int seckillStatus = 0;
-        int remainSeconds = 0;
+        int seckillStatus;
+        int remainSeconds;
 
-        if (now < startTime) {//秒杀还没开始，倒计时
+        if (now < startTime) {
+            //秒杀还没开始，倒计时
             seckillStatus = 0;
             remainSeconds = (int) ((startTime - now) / 1000);
-        } else if (now > endTime) {//秒杀已经结束
+        } else if (now > endTime) {
+            //秒杀已经结束
             seckillStatus = 2;
             remainSeconds = -1;
-        } else {//秒杀进行中
+        } else {
+            //秒杀进行中
             seckillStatus = 1;
             remainSeconds = 0;
         }
@@ -153,7 +158,6 @@ public class GoodsController {
         vo.setUser(user);
         vo.setRemainSeconds(remainSeconds);
         vo.setSeckillStatus(seckillStatus);
-
         return Result.success(vo);
     }
 }
