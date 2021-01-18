@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 
@@ -32,8 +31,8 @@ public class LoginController {
 
     @RequestMapping("/do_login")
     @ResponseBody
-    public Result<String> doLogin(HttpServletResponse response, HttpServletRequest request, @Valid LoginVo loginVo) {//加入JSR303参数校验
-        String token = userService.login(response, request, loginVo);
+    public Result<String> doLogin(HttpServletRequest request, @Valid LoginVo loginVo) {
+        String token = userService.login(request, loginVo);
         return Result.success(token);
     }
 }

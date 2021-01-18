@@ -20,7 +20,7 @@
 </head>
 <body>
 
-<div class="panel panel-default">
+<div class="panel panel-default" style="height:80%; position: absolute; width: 50%; left: 25%;text-align: center;">
     <div class="panel-heading">秒杀商品详情</div>
     <table class="table" id="goodslist">
         <tr>
@@ -61,6 +61,7 @@
 <input type="hidden" id="token"/>
 </body>
 <script type="text/javascript">
+
     function getSeckillResult(goodsId) {
         g_showLoading("处理中...");
         $.ajax({

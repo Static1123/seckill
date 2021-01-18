@@ -1,14 +1,10 @@
 package com.yl.seckill.controller;
 
-import com.alibaba.druid.util.StringUtils;
 import com.yl.seckill.constants.PatternConstants;
 import com.yl.seckill.dto.DetailRequestDTO;
-import com.yl.seckill.model.User;
-import com.yl.seckill.redis.GoodsKey;
 import com.yl.seckill.redis.RedisService;
 import com.yl.seckill.service.GoodsService;
 import com.yl.seckill.service.UserService;
-import com.yl.seckill.thread.ThreadLocalMap;
 import com.yl.seckill.vo.GoodsDetailVo;
 import com.yl.seckill.vo.GoodsVo;
 import com.yl.seckill.vo.Result;
@@ -58,28 +54,15 @@ public class GoodsController {
     @ResponseBody
     public String list(HttpServletRequest request, HttpServletResponse response, Model model) {
         String token = request.getParameter(PatternConstants.TOKEN_NAME);
-        User user = (User) ThreadLocalMap.get(request.getParameter(PatternConstants.TOKEN_NAME));
-
-        //取缓存
-        String html = redisService.get(GoodsKey.getGoodsList, "", String.class);
-        if (!StringUtils.isEmpty(html)) {
-            return html;
-        }
         List<GoodsVo> goodsList = goodsService.listGoodsVo();
         model.addAttribute(PatternConstants.TOKEN_NAME, token);
-        model.addAttribute("user", user);
         model.addAttribute("goodsList", goodsList);
+        model.addAttribute(PatternConstants.TOKEN_NAME, token);
 
         //手动渲染
         WebContext ctx = new WebContext(request, response,
                 request.getServletContext(), request.getLocale(), model.asMap());
-        html = thymeleafViewResolver.getTemplateEngine().process("goods_list", ctx);
-
-        if (!StringUtils.isEmpty(html)) {
-            redisService.set(GoodsKey.getGoodsList, "", html);
-        }
-        //结果输出
-        return html;
+        return thymeleafViewResolver.getTemplateEngine().process("goods_list", ctx);
     }
 
 

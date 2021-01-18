@@ -1,6 +1,7 @@
 package com.yl.seckill.controller;
 
 import com.google.common.util.concurrent.RateLimiter;
+import com.yl.seckill.dao.OrderMapper;
 import com.yl.seckill.dto.SecKillRequestDTO;
 import com.yl.seckill.model.SeckillOrder1;
 import com.yl.seckill.model.User;
@@ -57,6 +58,9 @@ public class Seckill1Controller implements InitializingBean {
     @Resource
     private RedisService redisService;
 
+    @Resource
+    private OrderMapper orderMapper;
+
     /**
      * 基于令牌桶算法的限流实现类
      */
@@ -85,6 +89,11 @@ public class Seckill1Controller implements InitializingBean {
         Long goodsId = requestDTO.getGoodsId();
         //判断重复秒杀
         SeckillOrder1 order = orderService.getOrderByUserIdGoodsId(user.getId(), goodsId);
+        if (order != null) {
+            return Result.error(CodeMsg.REPEATE_SECKILL);
+        }
+        //判断重复秒杀(DB)
+        order = orderMapper.getOrderByUserIdGoodsId(user.getId(), goodsId);
         if (order != null) {
             return Result.error(CodeMsg.REPEATE_SECKILL);
         }

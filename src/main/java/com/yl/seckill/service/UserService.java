@@ -1,6 +1,5 @@
 package com.yl.seckill.service;
 
-import com.alibaba.druid.util.StringUtils;
 import com.yl.seckill.dao.UserMapper;
 import com.yl.seckill.dto.LoginDTO;
 import com.yl.seckill.exception.SeckillException;
@@ -15,9 +14,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Administrator
@@ -33,8 +30,6 @@ public class UserService {
 
     @Resource
     private ApplicationEventPublisher publisher;
-
-    public static final String COOKIE_NAME_TOKEN = "token";
 
     private User getByPhone(long phone) {
         //对象缓存
@@ -72,7 +67,7 @@ public class UserService {
         return true;
     }
 
-    public String login(HttpServletResponse response, HttpServletRequest request, LoginVo loginVo) {
+    public String login(HttpServletRequest request, LoginVo loginVo) {
         if (loginVo == null) {
             throw new SeckillException("系统异常");
         }
@@ -92,7 +87,8 @@ public class UserService {
         }
         //生成唯一id作为token
         String token = UUIDUtil.uuid();
-        this.addCookie(response, token, user);
+        //写入redis
+        redisService.set(UserKey.token, token, user);
         //异步更新数据
         LoginDTO loginDTO = new LoginDTO();
         loginDTO.setId(user.getId());
@@ -100,33 +96,5 @@ public class UserService {
         loginDTO.setUserAgent(request.getHeader("User-Agent"));
         publisher.publishEvent(loginDTO);
         return token;
-    }
-
-    /**
-     * 将token做为key，用户信息做为value 存入redis模拟session
-     * 同时将token存入cookie，保存登录状态
-     */
-    public void addCookie(HttpServletResponse response, String token, User user) {
-        redisService.set(UserKey.token, token, user);
-        Cookie cookie = new Cookie(COOKIE_NAME_TOKEN, token);
-        cookie.setMaxAge(UserKey.token.expireSeconds());
-        //设置为网站根目录
-        cookie.setPath("/");
-        response.addCookie(cookie);
-    }
-
-    /**
-     * 根据token获取用户信息
-     */
-    public User getByToken(HttpServletResponse response, String token) {
-        if (StringUtils.isEmpty(token)) {
-            return null;
-        }
-        User user = redisService.get(UserKey.token, token, User.class);
-        //延长有效期，有效期等于最后一次操作+有效期
-        if (user != null) {
-            this.addCookie(response, token, user);
-        }
-        return user;
     }
 }

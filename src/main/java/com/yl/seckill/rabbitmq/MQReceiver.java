@@ -1,6 +1,7 @@
 package com.yl.seckill.rabbitmq;
 
 
+import com.yl.seckill.dao.OrderMapper;
 import com.yl.seckill.model.SeckillOrder1;
 import com.yl.seckill.model.User;
 import com.yl.seckill.redis.RedisService;
@@ -36,6 +37,9 @@ public class MQReceiver {
     @Resource
     SeckillService1 seckillService;
 
+    @Resource
+    private OrderMapper orderMapper;
+
     @RabbitListener(queues = MQConfig.QUEUE)
     public void receive(String message) {
         LOGGER.info("receive message:" + message);
@@ -48,15 +52,20 @@ public class MQReceiver {
         if (stock <= 0) {
             return;
         }
-
-        //判断重复秒杀
+        //判断重复秒杀(Redis)
         SeckillOrder1 order = orderService.getOrderByUserIdGoodsId(user.getId(), goodsId);
+        if (order != null) {
+            return;
+        }
+        //判断重复秒杀(DB)
+        order = orderMapper.getOrderByUserIdGoodsId(user.getId(), goodsId);
         if (order != null) {
             return;
         }
         try {
             //减库存 下订单 写入秒杀订单
             seckillService.seckill(user, goodsVo);
+            //TODO: 清除消息
         } catch (Exception ex) {
             LOGGER.error("减库存 下订单 写入秒杀订单 异常");
             LOGGER.error("{}", ex.getMessage(), ex);
