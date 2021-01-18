@@ -22,9 +22,6 @@
 
 <div class="panel panel-default">
     <div class="panel-heading">秒杀商品详情</div>
-    <div class="panel-body">
-        <span id="userTip"> 您还没有登录，请登陆后再操作<br/></span>
-    </div>
     <table class="table" id="goodslist">
         <tr>
             <td>商品名称</td>
@@ -38,13 +35,11 @@
             <td>秒杀开始时间</td>
             <td id="startTime"></td>
             <td>
-                <input type="hidden" id="remainSeconds"/>
                 <span id="seckillTip"></span>
             </td>
             <td>
                 <button class="btn btn-primary btn-block" type="button" id="buyButton" onclick="doSeckill()">立即秒杀
                 </button>
-                <input type="hidden" name="goodsId" id="goodsId"/>
             </td>
         </tr>
         <tr>
@@ -61,6 +56,9 @@
         </tr>
     </table>
 </div>
+<input type="hidden" id="remainSeconds"/>
+<input type="hidden" id="goodsId"/>
+<input type="hidden" id="token"/>
 </body>
 <script type="text/javascript">
     function getSeckillResult(goodsId) {
@@ -70,27 +68,29 @@
             type: "GET",
             data: {
                 goodsId: $("#goodsId").val(),
+                token: $("#token").val()
             },
+            async: false,
             success: function (data) {
-                if (data.code === 0) {
+                if (data.success) {
                     var result = data.data;
                     if (result < 0) {
                         layer.msg("对不起，秒杀失败");
-                    } else if (result === 0) {//继续轮询
+                    } else if (result === 0) {
                         setTimeout(function () {
                             getSeckillResult(goodsId);
                         }, 50);
                     } else {
                         layer.confirm("恭喜你，秒杀成功！查看订单？", {btn: ["确定", "取消"]},
                             function () {
-                                window.location.href = "/order_detail.htm?orderId=" + result;
+                                window.location.href = "/order/detail?orderId=" + result + "&token=" + $("#token").val();
                             },
                             function () {
                                 layer.closeAll();
                             });
                     }
                 } else {
-                    layer.msg(data.msg);
+                    layer.msg(data.error);
                 }
             },
             error: function () {
@@ -99,19 +99,32 @@
         });
     }
 
+    /**
+     *
+     * 秒杀操作
+     */
     function doSeckill() {
+        g_showLoading("请求处理中...");
         $.ajax({
             url: "/seckill/do_seckill",
             type: "POST",
             data: {
                 goodsId: $("#goodsId").val(),
+                token: $("#token").val()
             },
+            dataType: "JSON",
+            async: false,
             success: function (data) {
-                if (data.code === 0) {
-//                    window.location.href = "/order_detail.htm?orderId=" + data.data.id;
+                layer.closeAll();
+                if (data.success) {
                     getSeckillResult($("#goodsId").val());
+                } else if (data.error.indexOf('Session不存在') > -1) {
+                    layer.msg("请您先登录");
+                    setTimeout(function () {
+                        window.location.href = "/login/to_login";
+                    }, 1500);
                 } else {
-                    layer.msg(data.msg);
+                    layer.msg(data.error);
                 }
             },
             error: function () {
@@ -120,14 +133,17 @@
         });
     }
 
+    /**
+     * 呈现内容
+     * @param detail
+     */
     function render(detail) {
+        console.log(detail);
         var seckillStatus = detail.seckillStatus;
         var remainSeconds = detail.remainSeconds;
         var goods = detail.goods;
-        var user = detail.user;
-        if (user) {
-            $("#userTip").hide();
-        }
+        var token = detail.token;
+        $("#token").val(token);
         $("#goodsName").text(goods.goodsName);
         $("#goodsImg").attr("src", goods.goodsImg);
         $("#startTime").text(new Date(goods.startDate).format("yyyy-MM-dd hh:mm:ss"));
@@ -139,17 +155,23 @@
     }
 
     $(function () {
-        countDown();
         getDetail();
+        countDown();
     });
 
     function getDetail() {
         var goodsId = g_getQueryString("goodsId");
+        var token = g_getQueryString("token");
         $.ajax({
-            url: "/goods/detail/" + goodsId,
-            type: "GET",
+            url: "/goods/detail",
+            data: {
+                "goodsId": goodsId,
+                "token": token
+            },
+            type: "POST",
+            dataType: "JSON",
+            async: false,
             success: function (data) {
-                console.log(data);
                 if (data.success) {
                     //将数据渲染出来
                     render(data.data);
@@ -163,26 +185,31 @@
         });
     }
 
+    /**
+     * 计时器
+     */
     function countDown() {
-        var remainSeconds = $("#remainSeconds").val();
-        var timeout;
+        var remainSeconds = parseInt($("#remainSeconds").val());
+        var seckillTip = $("#seckillTip");
+        var buyButton = $("#buyButton");
+        var timeout = null;
         if (remainSeconds > 0) {//秒杀还没开始，倒计时
-            $("#buyButton").attr("disabled", true);
-            $("#seckillTip").html("秒杀倒计时：" + remainSeconds + "秒");
+            buyButton.attr("disabled", true);
+            seckillTip.text("秒杀倒计时：" + remainSeconds + "秒");
             timeout = setTimeout(function () {
                 $("#countDown").text(remainSeconds - 1);
                 $("#remainSeconds").val(remainSeconds - 1);
                 countDown();
             }, 1000);
-        } else if (remainSeconds === 0) {//秒杀进行中
-            $("#buyButton").attr("disabled", false);
-            if (timeout) {
+        } else if (remainSeconds < 0) {
+            buyButton.attr("disabled", true);
+            seckillTip.text("秒杀已经结束");
+        } else {
+            buyButton.attr("disabled", false);
+            seckillTip.text("秒杀进行中");
+            if (timeout != null) {
                 clearTimeout(timeout);
             }
-            $("#seckillTip").html("秒杀进行中");
-        } else {//秒杀已经结束
-            $("#buyButton").attr("disabled", true);
-            $("#seckillTip").html("秒杀已经结束");
         }
     }
 </script>

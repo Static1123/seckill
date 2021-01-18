@@ -49,8 +49,8 @@
                 <form id="seckillForm" method="post" action="/seckill/do_seckill">
                     <button class="btn btn-primary btn-block" type="submit" id="buyButton">立即秒杀</button>
                     <input type="hidden" name="goodsId" th:value="${goods.id}"/>
+                    <input type="hidden" name="token" th:value="${token}"/>
                 </form>
-                zzzzz
             </td>
         </tr>
         <tr>
@@ -75,6 +75,7 @@
 
     function countDown() {
         var remainSeconds = $("#remainSeconds").val();
+        alert(remainSeconds);
         var timeout;
         if (remainSeconds > 0) {//秒杀还没开始，倒计时
 //            $("#buyButton").attr("disabled", true);
@@ -94,6 +95,5 @@
             $("#seckillTip").html("秒杀已经结束");
         }
     }
-
 </script>
 </html>

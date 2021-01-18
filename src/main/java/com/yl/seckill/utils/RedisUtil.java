@@ -80,7 +80,7 @@ public class RedisUtil {
         return this.redisTemplate.type(key);
     }
 
-    public void set(String key, String value) {
+    public void set(String key, Object value) {
         this.redisTemplate.opsForValue().set(key, value);
     }
 
