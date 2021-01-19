@@ -19,7 +19,7 @@
     <script type="text/javascript" th:src="@{/js/common.js}"></script>
 </head>
 <body>
-<div class="panel panel-default">
+<div class="panel panel-default" style="height:80%; position: absolute; width: 50%; left: 25%;text-align: center;">
     <div class="panel-heading">恭喜你成功秒杀到商品，现在已进入秒杀订单详情</div>
     <table class="table" id="goodslist">
         <tr>
@@ -40,7 +40,7 @@
         </tr>
         <tr>
             <td>订单状态</td>
-            <td>
+            <td colspan="2" style="color:blue;">
                 <span th:if="${orderInfo.status eq 0}">未支付</span>
                 <span th:if="${orderInfo.status eq 1}">待发货</span>
                 <span th:if="${orderInfo.status eq 2}">已发货</span>
@@ -48,20 +48,16 @@
                 <span th:if="${orderInfo.status eq 4}">已退款</span>
                 <span th:if="${orderInfo.status eq 5}">已完成</span>
             </td>
-            <td>
-                <button class="btn btn-primary btn-block" type="submit" id="payButton">立即支付</button>
-            </td>
         </tr>
         <tr>
             <td>收货人</td>
-            <td colspan="2">延宇振 18812151525</td>
+            <td colspan="2">static 159****8997</td>
         </tr>
         <tr>
             <td>收货地址</td>
-            <td colspan="2">广东省广州市</td>
+            <td colspan="2">浙江省杭州市</td>
         </tr>
     </table>
 </div>
-
 </body>
 </html>

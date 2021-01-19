@@ -31,4 +31,9 @@ public final class PatternConstants {
      * 3.=只会出现在字符串最后,可能没有或者一个等号或者两个等号
      */
     public static final String BASE64 = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$";
+
+    /**
+     * 请求参数token
+     */
+    public static final String TOKEN_NAME = "token";
 }

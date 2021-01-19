@@ -4,55 +4,59 @@ package com.yl.seckill.controller;
 import com.yl.seckill.model.OrderInfo;
 import com.yl.seckill.model.User;
 import com.yl.seckill.redis.RedisService;
+import com.yl.seckill.redis.UserKey;
 import com.yl.seckill.service.GoodsService;
 import com.yl.seckill.service.OrderService;
-import com.yl.seckill.service.UserService;
 import com.yl.seckill.vo.CodeMsg;
 import com.yl.seckill.vo.GoodsVo;
-import com.yl.seckill.vo.OrderDetailVo;
-import com.yl.seckill.vo.Result;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.annotation.Resource;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 /**
- * Created by jiangyunxiong on 2018/5/28.
+ * @author Administrator
  */
 @Controller
 @RequestMapping("/order")
 public class OrderController {
 
-    @Autowired
-    UserService userService;
-
-    @Autowired
+    @Resource
     RedisService redisService;
 
-    @Autowired
+    @Resource
     OrderService orderService;
 
-    @Autowired
+    @Resource
     GoodsService goodsService;
 
     @RequestMapping("/detail")
-    @ResponseBody
-    public Result<OrderDetailVo> info(Model model, User user,
-                                      @RequestParam("orderId") long orderId) {
+    public String info(Model model,
+                       @NotNull
+                       @Min(1)
+                       @Max(Long.MAX_VALUE)
+                       @RequestParam("orderId") Long orderId,
+
+                       @NotEmpty
+                       @RequestParam("token") String token) {
+        User user = redisService.get(UserKey.token, token, User.class);
         if (user == null) {
-            return Result.error(CodeMsg.SESSION_ERROR);
+            return CodeMsg.SESSION_ERROR.getMsg();
         }
         OrderInfo order = orderService.getOrderById(orderId);
         if (order == null) {
-            return Result.error(CodeMsg.ORDER_NOT_EXIST);
+            return CodeMsg.ORDER_NOT_EXIST.getMsg();
         }
         long goodsId = order.getGoodsId();
         GoodsVo goods = goodsService.getGoodsVoByGoodsId(goodsId);
-        OrderDetailVo vo = new OrderDetailVo();
-        vo.setOrder(order);
-        vo.setGoods(goods);
-        return Result.success(vo);
+        model.addAttribute("goods", goods);
+        model.addAttribute("orderInfo", order);
+        return "order_detail";
     }
 }

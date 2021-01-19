@@ -27,34 +27,34 @@ public class UserUtil {
         //生成用户
         for (int i = 0; i < count; i++) {
             User user = new User();
-            user.setId(13000000000L + i);
+            user.setPhone(13000000000L + i);
             user.setLoginCount(1);
             user.setNickname("user" + i);
             user.setRegisterDate(new Date());
-            user.setSalt("1a2b3c");
+            user.setSalt("com.yl.seckill");
             user.setPassword(MD5Util.inputPassToDbPass("123456", user.getSalt()));
             users.add(user);
         }
         LOGGER.info("create user");
         Connection conn = DBUtil.getConn();
-        String sql = "insert into sk_user(login_count, nickname, register_date, salt, password, id)values(?,?,?,?,?,?)";
+        String sql = "insert into sk_user(phone,login_count, nickname, register_date, salt, password)values(?,?,?,?,?,?)";
         PreparedStatement pstmt = conn.prepareStatement(sql);
         for (int i = 0; i < users.size(); i++) {
             User user = users.get(i);
-            pstmt.setInt(1, user.getLoginCount());
-            pstmt.setString(2, user.getNickname());
-            pstmt.setTimestamp(3, new Timestamp(user.getRegisterDate().getTime()));
-            pstmt.setString(4, user.getSalt());
-            pstmt.setString(5, user.getPassword());
-            pstmt.setLong(6, user.getId());
+            pstmt.setLong(1, user.getPhone());
+            pstmt.setInt(2, user.getLoginCount());
+            pstmt.setString(3, user.getNickname());
+            pstmt.setTimestamp(4, new Timestamp(user.getRegisterDate().getTime()));
+            pstmt.setString(5, user.getSalt());
+            pstmt.setString(6, user.getPassword());
             pstmt.addBatch();
         }
         pstmt.executeBatch();
         pstmt.close();
         conn.close();
-        System.out.println("insert to db");
+        LOGGER.info("insert into db");
         //登录，生成token
-        String urlString = "http://localhost:8080/login/do_login";
+        String urlString = "http://localhost:8888/login/doLogin";
         File file = new File("D:/tokens.txt");
         if (file.exists()) {
             file.delete();
@@ -69,12 +69,12 @@ public class UserUtil {
             co.setRequestMethod("POST");
             co.setDoOutput(true);
             OutputStream out = co.getOutputStream();
-            String params = "mobile=" + user.getId() + "&password=" + MD5Util.inputPassToFormPass("123456");
+            String params = "mobile=" + user.getPhone() + "&password=123456";
             out.write(params.getBytes());
             out.flush();
             InputStream inputStream = co.getInputStream();
             ByteArrayOutputStream bout = new ByteArrayOutputStream();
-            byte buff[] = new byte[1024];
+            byte[] buff = new byte[1024];
             int len = 0;
             while ((len = inputStream.read(buff)) >= 0) {
                 bout.write(buff, 0, len);
@@ -84,20 +84,20 @@ public class UserUtil {
             String response = new String(bout.toByteArray());
             JSONObject jo = JSON.parseObject(response);
             String token = jo.getString("data");
-            System.out.println("create token : " + user.getId());
+            LOGGER.info("create token : " + user.getPhone());
 
-            String row = user.getId() + "," + token;
+            String row = user.getPhone() + "," + token;
             raf.seek(raf.length());
             raf.write(row.getBytes());
             raf.write("\r\n".getBytes());
-            System.out.println("write to file : " + user.getId());
+            LOGGER.info("write to file : " + user.getPhone());
         }
         raf.close();
 
-        System.out.println("over");
+        LOGGER.info("over");
     }
 
     public static void main(String[] args) throws Exception {
-        createUser(5000);
+        createUser(100);
     }
 }

@@ -4,6 +4,8 @@ package com.yl.seckill.service;
 import com.yl.seckill.dao.GoodsMapper;
 import com.yl.seckill.model.SeckillGoods;
 import com.yl.seckill.vo.GoodsVo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -14,6 +16,8 @@ import java.util.List;
  */
 @Service
 public class GoodsService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(GoodsService.class);
 
     /**
      * 乐观锁冲突最大重试次数
@@ -58,7 +62,7 @@ public class GoodsService {
                 sg.setVersion(goodsMapper.getVersionByGoodsId(goods.getId()));
                 ret = goodsMapper.reduceStockByVersion(sg);
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.error("{}", e.getMessage(), e);
             }
             if (ret != 0) {
                 break;

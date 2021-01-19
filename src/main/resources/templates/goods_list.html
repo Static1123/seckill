@@ -24,7 +24,6 @@
         }
 
         body {
-            background: url('/img/bg2.jpg') no-repeat;
             background-size: 100% 100%;
         }
 
@@ -34,8 +33,7 @@
     </style>
 </head>
 <body>
-
-<div class="panel panel-default" style="height:100%;background-color:rgba(222,222,222,0.8)">
+<div class="panel panel-default" style="height:80%; position: absolute; width: 50%; left: 25%;text-align: center;">
     <div class="panel-heading">秒杀商品列表</div>
     <table class="table" id="goodslist">
         <tr>
@@ -52,9 +50,10 @@
             <td th:text="${goods.goodsPrice}"></td>
             <td th:text="${goods.seckillPrice}"></td>
             <td th:text="${goods.stockCount}"></td>
-            <td><a th:href="'/goods_detail.htm?goodsId='+${goods.id}">详情</a></td>
+            <td><a th:href="'/goods/detail2?goodsId='+${goods.id}+'&token='+${token}">详情</a></td>
         </tr>
     </table>
 </div>
+<input type="hidden" th:value="${token}" id="token"/>
 </body>
 </html>

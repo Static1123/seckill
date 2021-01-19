@@ -1,5 +1,6 @@
 package com.yl.seckill.configuration;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,6 +47,9 @@ public class JedisConfig {
         jedisPoolConfig.setMaxWaitMillis(maxWaitMillis);
         jedisPoolConfig.setMaxTotal(maxActive);
         jedisPoolConfig.setMinIdle(minIdle);
+        if (StringUtils.isEmpty(password)) {
+            password = null;
+        }
         JedisPool jedisPool = new JedisPool(jedisPoolConfig, host, port, timeout, password);
         LOGGER.info("JedisPool init success");
         return jedisPool;

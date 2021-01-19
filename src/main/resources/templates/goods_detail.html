@@ -19,12 +19,8 @@
     <script type="text/javascript" th:src="@{/js/common.js}"></script>
 </head>
 <body>
-
-<div class="panel panel-default">
+<div class="panel panel-default" style="width:70%;align-content: center;">
     <div class="panel-heading">秒杀商品详情</div>
-    <div class="panel-body">
-        <span th:if="${user eq null}"> 您还没有登录，请登陆后再操作<br/></span>
-    </div>
     <table class="table" id="goodslist">
         <tr>
             <td>商品名称</td>
@@ -53,6 +49,7 @@
                 <form id="seckillForm" method="post" action="/seckill/do_seckill">
                     <button class="btn btn-primary btn-block" type="submit" id="buyButton">立即秒杀</button>
                     <input type="hidden" name="goodsId" th:value="${goods.id}"/>
+                    <input type="hidden" name="token" th:value="${token}"/>
                 </form>
             </td>
         </tr>
@@ -78,6 +75,7 @@
 
     function countDown() {
         var remainSeconds = $("#remainSeconds").val();
+        alert(remainSeconds);
         var timeout;
         if (remainSeconds > 0) {//秒杀还没开始，倒计时
 //            $("#buyButton").attr("disabled", true);
@@ -97,6 +95,5 @@
             $("#seckillTip").html("秒杀已经结束");
         }
     }
-
 </script>
 </html>

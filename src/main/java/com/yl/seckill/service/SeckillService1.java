@@ -49,14 +49,9 @@ public class SeckillService1 {
         SeckillOrder1 order = orderService.getOrderByUserIdGoodsId(userId, goodsId);
         if (order != null) {
             return order.getOrderId();
-        } else {
-            boolean isOver = getGoodsOver(goodsId);
-            if (isOver) {
-                return -1;
-            } else {
-                return 0;
-            }
         }
+        boolean isOver = this.getGoodsOver(goodsId);
+        return isOver ? -1 : 0;
     }
 
     private void setGoodsOver(Long goodsId) {

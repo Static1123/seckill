@@ -11,7 +11,7 @@ import java.util.Map;
  * @author Administrator
  */
 @RestController
-public class TestController extends BaseController {
+public class TestController {
     @GetMapping("/test")
     public String test() throws Exception {
         Map<String, Object> map = Maps.newHashMap();
