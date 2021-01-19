@@ -19,7 +19,6 @@ import com.yl.seckill.vo.GoodsVo;
 import com.yl.seckill.vo.Result;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -135,14 +134,14 @@ public class Seckill1Controller implements InitializingBean {
      */
     @RequestMapping(value = "/result", method = RequestMethod.GET)
     @ResponseBody
-    public Result<Long> seckillResult(Model model,
-                                      @NotNull
-                                      @Min(1)
-                                      @Max(Long.MAX_VALUE)
-                                      @RequestParam("goodsId") Long goodsId,
+    public Result<Long> seckillResult(
+            @NotNull
+            @Min(1)
+            @Max(Long.MAX_VALUE)
+            @RequestParam("goodsId") Long goodsId,
 
-                                      @NotEmpty
-                                      @RequestParam("token") String token) {
+            @NotEmpty
+            @RequestParam("token") String token) {
         User user = redisService.get(UserKey.token, token, User.class);
         if (user == null) {
             return Result.error(CodeMsg.SESSION_ERROR);

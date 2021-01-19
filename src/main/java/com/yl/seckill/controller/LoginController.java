@@ -24,12 +24,12 @@ public class LoginController {
     private UserService userService;
 
 
-    @RequestMapping("/to_login")
+    @RequestMapping("/toLogin")
     public String toLogin() {
         return "login";
     }
 
-    @RequestMapping("/do_login")
+    @RequestMapping("/doLogin")
     @ResponseBody
     public Result<String> doLogin(HttpServletRequest request, @Valid LoginVo loginVo) {
         String token = userService.login(request, loginVo);

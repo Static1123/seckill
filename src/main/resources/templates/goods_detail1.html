@@ -62,6 +62,9 @@
 </body>
 <script type="text/javascript">
 
+    /**
+     * 秒杀结果
+     */
     function getSeckillResult(goodsId) {
         g_showLoading("处理中...");
         $.ajax({
@@ -122,7 +125,7 @@
                 } else if (data.error.indexOf('Session不存在') > -1) {
                     layer.msg("请您先登录");
                     setTimeout(function () {
-                        window.location.href = "/login/to_login";
+                        window.location.href = "/login/toLogin";
                     }, 1500);
                 } else {
                     layer.msg(data.error);
@@ -139,8 +142,6 @@
      * @param detail
      */
     function render(detail) {
-        console.log(detail);
-        var seckillStatus = detail.seckillStatus;
         var remainSeconds = detail.remainSeconds;
         var goods = detail.goods;
         var token = detail.token;
@@ -173,6 +174,7 @@
             dataType: "JSON",
             async: false,
             success: function (data) {
+                console.log(data);
                 if (data.success) {
                     //将数据渲染出来
                     render(data.data);
