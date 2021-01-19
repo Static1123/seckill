@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -22,5 +23,10 @@ public class LoginVo extends BaseObject {
     private String mobile;
 
     @NotNull
+    @NotEmpty
     private String password;
+
+    @NotNull
+    @NotEmpty
+    private String verifyCode;
 }
