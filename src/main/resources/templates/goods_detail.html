@@ -46,7 +46,7 @@
                                                           th:text="${remainSeconds}"></span>秒</span>
             </td>
             <td>
-                <form id="seckillForm" method="post" action="/seckill/do_seckill">
+                <form id="seckillForm" method="post" action="/seckill/doSecKill">
                     <button class="btn btn-primary btn-block" type="submit" id="buyButton">立即秒杀</button>
                     <input type="hidden" name="goodsId" th:value="${goods.id}"/>
                     <input type="hidden" name="token" th:value="${token}"/>

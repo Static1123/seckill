@@ -75,7 +75,7 @@ public class Seckill1Controller implements InitializingBean {
      * @param requestDTO
      * @return
      */
-    @RequestMapping(value = "/do_seckill", method = RequestMethod.POST)
+    @RequestMapping(value = "/doSecKill", method = RequestMethod.POST)
     @ResponseBody
     public Result<Integer> list(@Valid SecKillRequestDTO requestDTO) {
         User user = redisService.get(UserKey.token, requestDTO.getToken(), User.class);

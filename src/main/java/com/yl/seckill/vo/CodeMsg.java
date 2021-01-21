@@ -30,6 +30,8 @@ public class CodeMsg {
     public static CodeMsg SECKILL_OVER = new CodeMsg(500500, "商品已经秒杀完毕");
     public static CodeMsg REPEATE_SECKILL = new CodeMsg(500501, "不能重复秒杀");
     public static CodeMsg VALID_CODE_ERROR = new CodeMsg(50060, "验证码错误");
+    public static CodeMsg PASSWORD_LENGTH_ERROR = new CodeMsg(50061, "密码应为6-20位");
+    public static CodeMsg PASSWORD_PATTERN_ERROR = new CodeMsg(50062, "密码应同时包含大小写字符、数字以及特殊字符");
 
     private CodeMsg() {
     }

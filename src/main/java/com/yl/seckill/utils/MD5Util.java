@@ -57,6 +57,8 @@ public class MD5Util {
     }
 
     public static void main(String[] args) {
-        LOGGER.info("{}", inputPassToDbPass("123456", SALT));
+        String pwd = PasswordUtil.generatePwd(12);
+        LOGGER.info("{}", pwd);
+        LOGGER.info("{}", inputPassToDbPass(pwd, SALT));
     }
 }

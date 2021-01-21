@@ -4,6 +4,7 @@ package com.yl.seckill.controller;
 import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.CircleCaptcha;
 import com.yl.seckill.service.UserService;
+import com.yl.seckill.utils.RegexUtil;
 import com.yl.seckill.vo.CodeMsg;
 import com.yl.seckill.vo.LoginVo;
 import com.yl.seckill.vo.Result;
@@ -49,6 +50,26 @@ public class LoginController {
         String verifyCode = loginVo.getVerifyCode();
         if (!verifyCode.equalsIgnoreCase(String.valueOf(session.getAttribute(VERIFY_CODE)))) {
             return Result.error(CodeMsg.VALID_CODE_ERROR);
+        }
+        String password = loginVo.getPassword();
+        int counter = 0;
+        if (password.length() < 6 || password.length() > 20) {
+            return Result.error(CodeMsg.PASSWORD_LENGTH_ERROR);
+        }
+        if (RegexUtil.LOWER_REGEX.matcher(password).find()) {
+            counter = counter + 1;
+        }
+        if (RegexUtil.NUMBER_REGEX.matcher(password).find()) {
+            counter = counter + 1;
+        }
+        if (RegexUtil.SPECIAL_REGEX.matcher(password).find()) {
+            counter = counter + 1;
+        }
+        if (RegexUtil.UPPER_REGEX.matcher(password).find()) {
+            counter = counter + 1;
+        }
+        if (counter < 4) {
+            return Result.error(CodeMsg.PASSWORD_PATTERN_ERROR);
         }
         String token = userService.login(request, loginVo);
         return Result.success(token);
