@@ -15,6 +15,7 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = false)
 @ToString
 public class GoodsVo extends Goods {
+    private Long goodsId;
     private Double seckillPrice;
     private Integer stockCount;
     private Date startDate;

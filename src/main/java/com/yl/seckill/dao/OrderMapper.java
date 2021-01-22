@@ -5,6 +5,8 @@ import com.yl.seckill.model.SeckillOrder1;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * @author Administrator
  */
@@ -33,4 +35,7 @@ public interface OrderMapper {
 
     @Select("select * from sk_order_info where id = #{orderId}")
     OrderInfo getOrderById(@Param("orderId") long orderId);
+
+    @Select("select * from sk_order_info")
+    List<OrderInfo> getAllList();
 }

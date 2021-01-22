@@ -40,4 +40,12 @@ public interface GoodsMapper {
      */
     @Select("select version from sk_goods_seckill  where goods_id = #{goodsId}")
     int getVersionByGoodsId(@Param("goodsId") long goodsId);
+
+    /**
+     * 获取活动中的商品
+     *
+     * @return
+     */
+    @Select("SELECT * FROM sk_goods_seckill AS t WHERE CURRENT_DATE() BETWEEN start_date AND end_date")
+    List<GoodsVo> getProcessingList();
 }
