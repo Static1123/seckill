@@ -1,8 +1,10 @@
 package com.yl.seckill.controller;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.google.common.util.concurrent.RateLimiter;
 import com.yl.seckill.dao.OrderMapper;
 import com.yl.seckill.dto.SecKillRequestDTO;
+import com.yl.seckill.exception.BlockedException;
 import com.yl.seckill.model.SeckillOrder1;
 import com.yl.seckill.model.User;
 import com.yl.seckill.rabbitmq.MQSender;
@@ -75,6 +77,7 @@ public class Seckill1Controller implements InitializingBean {
      * @param requestDTO
      * @return
      */
+    @SentinelResource(value = "do-seckill", blockHandler = "handleException", blockHandlerClass = BlockedException.class)
     @RequestMapping(value = "/doSecKill", method = RequestMethod.POST)
     @ResponseBody
     public Result<Integer> list(@Valid SecKillRequestDTO requestDTO) {

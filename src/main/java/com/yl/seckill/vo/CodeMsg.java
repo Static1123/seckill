@@ -32,6 +32,7 @@ public class CodeMsg {
     public static CodeMsg VALID_CODE_ERROR = new CodeMsg(50060, "验证码错误");
     public static CodeMsg PASSWORD_LENGTH_ERROR = new CodeMsg(50061, "密码应为6-20位");
     public static CodeMsg PASSWORD_PATTERN_ERROR = new CodeMsg(50062, "密码应同时包含大小写字符、数字以及特殊字符");
+    public static CodeMsg FLOW_LIMITED = new CodeMsg(60000, "通过sentinel限流,请稍后再试");
 
     private CodeMsg() {
     }
