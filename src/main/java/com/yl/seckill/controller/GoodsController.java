@@ -1,7 +1,9 @@
 package com.yl.seckill.controller;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.yl.seckill.constants.PatternConstants;
 import com.yl.seckill.dto.DetailRequestDTO;
+import com.yl.seckill.exception.BlockedException;
 import com.yl.seckill.redis.RedisService;
 import com.yl.seckill.service.GoodsService;
 import com.yl.seckill.service.UserService;
@@ -69,6 +71,7 @@ public class GoodsController {
     /**
      * 商品详情页面(展示)
      */
+    @SentinelResource(value = "detail", blockHandler = "handleException", blockHandlerClass = BlockedException.class)
     @RequestMapping(value = "/detail2", method = RequestMethod.GET)
     public String detail2(HttpServletRequest request, HttpServletResponse response, Model model,
                           @NotNull

@@ -8,9 +8,9 @@
     "strategy": 0
   },
   {
-    "resource": "resource2",
+    "resource": "detail",
     "controlBehavior": 0,
-    "count": 1,
+    "count": 30,
     "grade": 1,
     "limitApp": "default",
     "strategy": 0
